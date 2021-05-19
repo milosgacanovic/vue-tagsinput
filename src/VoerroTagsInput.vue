@@ -113,7 +113,7 @@ export default {
             }
         },
 
-        value: {
+        modelValue: {
             type: Array,
             default: () => {
                 return [];
@@ -311,6 +311,12 @@ export default {
         });
     },
 
+    updated: function () {
+        this.$nextTick(function () {
+            this.$emit('update:modelValue', this.tags);
+        })
+    },
+
     computed: {
         hideInputField() {
             return (this.hideInputOnLimit && this.limit > 0 && this.tags.length >= this.limit) || this.disabled;
@@ -358,15 +364,19 @@ export default {
             this.searchTag();
         },
 
-        tags() {
-            // Updating the hidden input
-            this.hiddenInput = JSON.stringify(this.tags);
+        tags: {
+            handler: function() {
+                // Updating the hidden input
+                this.hiddenInput = JSON.stringify(this.tags);
 
-            // Update the bound v-model value
-            this.$emit('input', this.tags);
+                // ne radi ovako, pa sam iskljucio
+                // Update the bound v-model value
+                // if (this.tags.length) this.$emit('update:modelValue', this.tags);
+            },
+            deep: true
         },
 
-        value() {
+        modelValue() {
             this.tagsFromValue();
         },
 
@@ -716,14 +726,14 @@ export default {
          * @returns void
          */
         tagsFromValue() {
-            if (this.value && this.value.length) {
-                if (!Array.isArray(this.value)) {
+            if (this.modelValue && this.modelValue.length) {
+                if (!Array.isArray(this.modelValue)) {
                     console.error('Voerro Tags Input: the v-model value must be an array!');
 
                     return;
                 }
 
-                let tags = this.value;
+                let tags = this.modelValue;
 
                 // Don't update if nothing has changed
                 if (this.tags == tags) {
