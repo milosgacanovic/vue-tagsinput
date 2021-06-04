@@ -518,6 +518,8 @@ export default {
                     this.$emit('tags-updated');
                 });
             }
+            
+            this.clearSearchResults();
         },
 
         /**
@@ -576,7 +578,7 @@ export default {
                     this.searchResults = [];
                 }
 
-                this.searchSelection = 0;
+                this.searchSelection = -1;
                 let input = this.input.trim();
 
                 if ((input.length && input.length >= this.typeaheadActivationThreshold) || this.typeaheadActivationThreshold == 0 || this.typeaheadAlwaysShow) {
